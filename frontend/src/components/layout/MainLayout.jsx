@@ -1,0 +1,21 @@
+import { Box, Toolbar } from "@mui/material";
+import NavBar from "./NavBar.jsx";
+import SideBar from "./SideBar.jsx";
+
+function MainLayout({ children }) {
+  return (
+    <Box sx={{ display: "flex", padding: "20px" }}>
+      <SideBar />
+
+      <Box sx={{ flexGrow: 1 }}>
+        <NavBar />
+
+        <Toolbar />
+
+        <Box className="p-6">{children}</Box>
+      </Box>
+    </Box>
+  );
+}
+
+export default MainLayout;
