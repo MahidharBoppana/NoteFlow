@@ -3,17 +3,22 @@ import { Typography, Button } from "@mui/material";
 import AuthInput from "../components/forms/AuthInput.jsx";
 import PasswordInput from "../components/forms/PasswordInput.jsx";
 import AuthLayout from "../components/layout/AuthLayout.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   validateEmail,
   validateRequired,
   validatePassword,
 } from "../utils/Validators.js";
-
-
+import { useUI } from "../context/UIContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function LoginPage() {
+  const { showToast } = useUI();
+  const { login } = useAuth();
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -50,9 +55,23 @@ function LoginPage() {
 
     const isValid = validateForm();
 
-    if(!isValid) return;
+    if (!isValid) {
+      showToast("Please fix validation errors", "error");
+      return;
+    }
 
-    console.log(formData);
+    login(
+      {
+        name: "Mahidhar",
+        email: formData.email,
+      },
+
+      "demo-token",
+    );
+
+    showToast("Login successfull", "success");
+
+    navigate("/dashboard");
   };
   return (
     <AuthLayout title="Login">
