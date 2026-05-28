@@ -15,6 +15,10 @@ function NotesProvider({ children }) {
     },
   ]);
 
+  const [selectedNote, setSelectedNote] = useState(null);
+
+  const [openEditorModal, setOpenEditorModal] = useState(false);
+
   const addNote = (note) => {
     const newNote = {
       id: Date.now(),
@@ -31,7 +35,7 @@ function NotesProvider({ children }) {
   };
 
   const updateNote = (id, updatedData) => {
-    setNotes((prevNotes) => {
+    setNotes((prevNotes) =>
       prevNotes.map((note) => {
         if (note.id === id) {
           return {
@@ -41,8 +45,8 @@ function NotesProvider({ children }) {
         }
 
         return note;
-      });
-    });
+      }),
+    );
   };
 
   return (
@@ -52,6 +56,10 @@ function NotesProvider({ children }) {
         addNote,
         deleteNote,
         updateNote,
+        selectedNote,
+        setSelectedNote,
+        openEditorModal,
+        setOpenEditorModal,
       }}
     >
       {children}

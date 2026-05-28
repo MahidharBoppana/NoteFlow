@@ -15,8 +15,10 @@ import { useNotes } from "../../context/NotesContext";
 
 import NoteViewerModal from "./NoteViewerModal";
 
+import EditIcon from "@mui/icons-material/Edit";
+
 function NotesCard({ note }) {
-  const { deleteNote } = useNotes();
+  const { deleteNote, setSelectedNote, setOpenEditorModal } = useNotes();
 
   const [openViewer, setOpenViewer] = useState(false);
 
@@ -63,14 +65,28 @@ function NotesCard({ note }) {
               {note.title}
             </Typography>
 
-            <IconButton
-              onClick={() => deleteNote(note.id)}
-              sx={{
-                color: "#ef4444",
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
+            <div>
+              <IconButton
+                onClick={() => {
+                  setSelectedNote(note);
+                  setOpenEditorModal(true);
+                }}
+                sx={{
+                  color: "#2563eb",
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+
+              <IconButton
+                onClick={() => deleteNote(note.id)}
+                sx={{
+                  color: "#ef4444",
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </div>
           </Box>
 
           <Typography

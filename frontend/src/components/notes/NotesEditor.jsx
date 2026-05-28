@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Paper, TextField, Button, Typography } from "@mui/material";
 
@@ -9,13 +9,27 @@ import { useNotes } from "../../context/NotesContext";
 import { useUI } from "../../context/UIContext";
 
 function NotesEditor() {
-  const { addNote } = useNotes();
+  const {
+    addNote,
+    selectedNote,
+    updateNote,
+    setSelectedNote,
+    setOpenEditorModal,
+  } = useNotes();
 
   const { showToast } = useUI();
 
   const [title, setTitle] = useState("");
 
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (selectedNote) {
+      setTitle(selectedNote.title);
+
+      setContent(selectedNote.content);
+    }
+  }, [selectedNote]);
 
   const handleCreateNote = () => {
     if (!title.trim() || !content.trim()) {
@@ -24,12 +38,29 @@ function NotesEditor() {
       return;
     }
 
-    addNote({
-      title,
-      content,
-    });
+    if (selectedNote) {
+      updateNote(
+        selectedNote.id,
 
-    showToast("Note created successfully", "success");
+        {
+          title,
+          content,
+        },
+      );
+
+      showToast("Note updated successfully", "success");
+
+      setSelectedNote(null);
+    } else {
+      addNote({
+        title,
+        content,
+      });
+
+      showToast("Note created successfully", "success");
+    }
+
+    setOpenEditorModal(false);
 
     setTitle("");
     setContent("");
@@ -47,7 +78,7 @@ function NotesEditor() {
       "
     >
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Create Note
+        {selectedNote ? "Update Note" : "Create Note"}
       </Typography>
 
       <TextField
@@ -79,7 +110,7 @@ function NotesEditor() {
       />
 
       <Button variant="contained" onClick={handleCreateNote} className="mt-5">
-        Create Note
+        {selectedNote ? "Update Note" : "Create Note"}
       </Button>
     </Paper>
   );
