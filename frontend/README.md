@@ -1,16 +1,148 @@
-# React + Vite
+# NoteFlow Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern rich-text notes application built using React, Material UI, Tailwind CSS, and TinyMCE.
+NoteFlow helps users create, organize, search, pin, categorize, and manage notes with a clean and responsive UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# Features
 
-## React Compiler
+## Authentication UI
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Login page
+* Signup page
+* Protected routes
+* Authentication context
 
-## Expanding the ESLint configuration
+## Notes Management
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* Create notes
+* Edit notes
+* Delete notes
+* Restore deleted notes
+* Permanently delete notes
+* Rich text editing with TinyMCE
+
+## Productivity Features
+
+* Pin important notes
+* Categories system
+* Search notes
+* Debounced search optimization
+* Trash system
+
+## UI & UX
+
+* Dark mode support
+* Responsive layout
+* Sidebar navigation
+* Modal-based editor
+* Toast notifications
+* Profile page
+
+---
+
+# Tech Stack
+
+## Frontend
+
+* React
+* React Router DOM
+* Context API
+* Material UI (MUI)
+* Tailwind CSS
+* TinyMCE Editor
+
+---
+
+# Folder Structure
+
+```bash
+src/
+│
+├── components/
+│   ├── forms/
+│   ├── layout/
+│   └── notes/
+│
+├── context/
+│
+├── hooks/
+│
+├── pages/
+│
+├── routes/
+│
+├── theme/
+│
+└── main.jsx
+```
+
+---
+
+# Installation
+
+## Clone Repository
+
+```bash
+git clone <your-repo-url>
+```
+
+## Navigate to Project
+
+```bash
+cd frontend
+```
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+## Start Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file in the frontend root:
+
+```env
+VITE_TINYMCE_API_KEY=your_tinymce_api_key
+```
+
+---
+
+# Major Concepts Implemented
+
+* Context API State Management
+* Protected Routing
+* Rich Text Editor Integration
+* Debouncing with Custom Hooks
+* Soft Delete Architecture
+* Global Theme System
+* Responsive Design
+* Reusable Component Architecture
+
+---
+
+# Upcoming Backend Integration
+
+The backend will be built using:
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+
+---
+
+# Author
+
+Mahidhar Boppana.
