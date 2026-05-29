@@ -4,6 +4,7 @@ import SignupPage from "../pages/SignupPage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import ProfilePage from "../pages/ProfilePage.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
+import TrashPage from "../pages/TrashPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
 import ProtectedRoute from "./ProtectedRoutes.jsx";
 
@@ -26,6 +27,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/trash"
+        element={
+          <ProtectedRoute>
+            <TrashPage />
           </ProtectedRoute>
         }
       />

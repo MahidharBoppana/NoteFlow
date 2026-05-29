@@ -1,10 +1,21 @@
 import { Box, Toolbar } from "@mui/material";
 import NavBar from "./NavBar.jsx";
 import SideBar from "./SideBar.jsx";
+import { useTheme } from "@mui/material/styles";
 
 function MainLayout({ children }) {
+  const theme = useTheme();
   return (
-    <Box sx={{ display: "flex", padding: "20px" }}>
+    <Box
+      style={{
+        backgroundColor: theme.palette.background.default,
+
+        color: theme.palette.text.primary,
+
+        minHeight: "100vh",
+      }}
+      sx={{ display: "flex", padding: "20px" }}
+    >
       <SideBar />
 
       <Box sx={{ flexGrow: 1 }}>

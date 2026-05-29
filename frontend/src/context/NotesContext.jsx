@@ -11,6 +11,11 @@ function NotesProvider({ children }) {
 
       content: "This is your first note.",
 
+      isPinned: false,
+
+      category: "Personal",
+      isTrashed: false,
+
       createdAt: new Date().toISOString(),
     },
   ]);
@@ -24,6 +29,9 @@ function NotesProvider({ children }) {
       id: Date.now(),
 
       ...note,
+
+      isPinned: false,
+      isTrashed: false,
       createdAt: new Date().toISOString(),
     };
 
@@ -31,8 +39,45 @@ function NotesProvider({ children }) {
   };
 
   const deleteNote = (id) => {
-    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    setNotes((prevNotes) =>
+      prevNotes.map((note) => {
+        if (note.id === id) {
+          return {
+            ...note,
+            isTrashed: true,
+          };
+        }
+        return note;
+      }),
+    );
   };
+
+  const restoreNote = (id) => {
+
+  setNotes((prevNotes) =>
+    prevNotes.map((note) => {
+
+      if (note.id === id) {
+
+        return {
+          ...note,
+          isTrashed: false,
+        };
+      }
+
+      return note;
+    })
+  );
+};
+
+const permanentlyDeleteNote = (id) => {
+
+  setNotes((prevNotes) =>
+    prevNotes.filter(
+      (note) => note.id !== id
+    )
+  );
+};
 
   const updateNote = (id, updatedData) => {
     setNotes((prevNotes) =>
@@ -49,13 +94,31 @@ function NotesProvider({ children }) {
     );
   };
 
+  const togglePinNote = (id) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) => {
+        if (note.id === id) {
+          return {
+            ...note,
+
+            isPinned: !note.isPinned,
+          };
+        }
+        return note;
+      }),
+    );
+  };
+
   return (
     <NotesContext.Provider
       value={{
         notes,
         addNote,
         deleteNote,
+        restoreNote,
+permanentlyDeleteNote,
         updateNote,
+        togglePinNote,
         selectedNote,
         setSelectedNote,
         openEditorModal,

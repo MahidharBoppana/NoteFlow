@@ -10,7 +10,9 @@ import {
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { NavLink } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 const drawerWidth = 240;
 
@@ -26,12 +28,24 @@ const navItems = [
     path: "/profile",
     icon: <PersonIcon />,
   },
+
+  {
+    label: "Trash",
+    path: "/trash",
+    icon: <DeleteIcon />,
+  },
 ];
 
 function SideBar() {
+  const theme = useTheme();
   return (
     <Drawer
       variant="permanent"
+      style={{
+        backgroundColor: theme.palette.background.paper,
+
+        color: theme.palette.text.primary,
+      }}
       sx={{
         width: drawerWidth,
         flexShrink: 0,

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { Paper, TextField, Button, Typography } from "@mui/material";
+import { Paper, TextField, Button, Typography, MenuItem } from "@mui/material";
 
 import { Editor } from "@tinymce/tinymce-react";
 
@@ -23,11 +23,15 @@ function NotesEditor() {
 
   const [content, setContent] = useState("");
 
+  const [category, setCategory] = useState("Personal");
+
   useEffect(() => {
     if (selectedNote) {
       setTitle(selectedNote.title);
 
       setContent(selectedNote.content);
+
+      setCategory(selectedNote.category);
     }
   }, [selectedNote]);
 
@@ -45,6 +49,7 @@ function NotesEditor() {
         {
           title,
           content,
+          category,
         },
       );
 
@@ -55,15 +60,19 @@ function NotesEditor() {
       addNote({
         title,
         content,
+        category,
       });
 
       showToast("Note created successfully", "success");
+
+      console.log(category);
     }
 
     setOpenEditorModal(false);
 
     setTitle("");
     setContent("");
+    setCategory("Personal");
   };
 
   return (
@@ -75,9 +84,12 @@ function NotesEditor() {
         border
         border-gray-200
         mb-8
+        flex
+        flex-col
+        gap-3
       "
     >
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
+      <Typography variant="h5" component="span" fontWeight="bold" gutterBottom>
         {selectedNote ? "Update Note" : "Create Note"}
       </Typography>
 
@@ -88,6 +100,45 @@ function NotesEditor() {
         onChange={(event) => setTitle(event.target.value)}
         className="mb-6"
       />
+
+      <div
+        className="
+    flex
+    gap-3
+    flex-wrap
+  "
+      >
+        {["Personal", "Work", "Study", "Ideas"].map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => setCategory(item)}
+            className={`
+        px-4
+        py-2
+        rounded-full
+        border
+        transition-all
+
+        ${
+          category === item
+            ? `
+              bg-blue-600
+              text-white
+              border-blue-600
+            `
+            : `
+              bg-white
+              text-gray-700
+              border-gray-300
+            `
+        }
+      `}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
 
       <Editor
         apiKey="e5ser7od1hd5l0e4dqk05ppipnpprbm1oyowuzekc03dgynv"

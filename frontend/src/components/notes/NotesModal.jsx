@@ -20,11 +20,10 @@ function NoteModal({ open, onClose }) {
       sx={{
         zIndex: 9999,
       }}
-
       className="mt-10"
     >
       <DialogTitle className="flex justify-between items-center">
-        <Typography variant="h5" fontWeigh="bold">
+        <Typography variant="h5" component="span" fontWeight="bold">
           Note Editor
         </Typography>
 

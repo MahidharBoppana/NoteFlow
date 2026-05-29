@@ -17,8 +17,11 @@ import NoteViewerModal from "./NoteViewerModal";
 
 import EditIcon from "@mui/icons-material/Edit";
 
+import PushPinIcon from "@mui/icons-material/PushPin";
+
 function NotesCard({ note }) {
-  const { deleteNote, setSelectedNote, setOpenEditorModal } = useNotes();
+  const { deleteNote, setSelectedNote, setOpenEditorModal, togglePinNote } =
+    useNotes();
 
   const [openViewer, setOpenViewer] = useState(false);
 
@@ -68,6 +71,17 @@ function NotesCard({ note }) {
             <div>
               <IconButton
                 onClick={() => {
+                  togglePinNote(note.id);
+                }}
+                sx={{
+                  color: note.isPinned ? "#f59e0b" : "#9ca3af",
+                }}
+              >
+                <PushPinIcon />
+              </IconButton>
+
+              <IconButton
+                onClick={() => {
                   setSelectedNote(note);
                   setOpenEditorModal(true);
                 }}
@@ -109,16 +123,33 @@ function NotesCard({ note }) {
           </Typography>
 
           <div className="mt-4">
-            <Typography
-              variant="caption"
-              className="
+            <div className="flex justify-between mb-5 items-center">
+              <Typography
+                variant="caption"
+                className="
                 text-gray-400
                 block
                 mb-3
               "
-            >
-              {new Date(note.createdAt).toLocaleDateString()}
-            </Typography>
+              >
+                {new Date(note.createdAt).toLocaleDateString()}
+              </Typography>
+
+              <Typography
+                variant="caption"
+                className="
+    inline-block
+    px-3
+    py-1
+    rounded-full
+    bg-blue-100
+    text-blue-700
+    mb-3
+  "
+              >
+                {note.category}
+              </Typography>
+            </div>
 
             <Button
               variant="outlined"

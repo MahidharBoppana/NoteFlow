@@ -8,8 +8,12 @@ import EmptyNotes from "./EmptyNotes";
 function NotesGrid({ searchQuery }) {
   const { notes } = useNotes();
 
-
   const filteredNotes = notes.filter((note) => {
+
+    if(note.isTrashed){
+      return false;
+    }
+
     const searchText = (searchQuery || "").toLowerCase();
 
     const titleMatch = note.title.toLowerCase().includes(searchText);
@@ -22,13 +26,17 @@ function NotesGrid({ searchQuery }) {
     return titleMatch || contentMatch;
   });
 
+  const sortedNotes = [...filteredNotes].sort(
+    (a, b) => b.isPinned - a.isPinned,
+  );
+
   if (filteredNotes.length === 0) {
     return <EmptyNotes />;
   }
-  
+
   return (
     <Grid container spacing={3}>
-      {filteredNotes.map((note) => (
+      {sortedNotes.map((note) => (
         <Grid item xs={12} sm={6} md={4} key={note.id}>
           <NotesCard note={note} />
         </Grid>

@@ -7,19 +7,20 @@ import ThemeProvider from "./theme/ThemeProvider.jsx";
 import UIProvider from "./context/UIContext.jsx";
 import AuthProvider from "./context/AuthContext.jsx";
 import NotesProvider from "./context/NotesContext.jsx";
+import { ThemeProviderContext } from "./context/ThemeContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <UIProvider>
-          <AuthProvider>
-            <NotesProvider>
+    <ThemeProviderContext>
+      <AuthProvider>
+        <NotesProvider>
+          <UIProvider>
+            <BrowserRouter>
               <App />
-            </NotesProvider>
-          </AuthProvider>
-        </UIProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+            </BrowserRouter>
+          </UIProvider>
+        </NotesProvider>
+      </AuthProvider>
+    </ThemeProviderContext>
   </React.StrictMode>,
 );
