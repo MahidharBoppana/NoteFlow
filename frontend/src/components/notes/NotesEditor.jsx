@@ -141,7 +141,7 @@ function NotesEditor() {
       </div>
 
       <Editor
-        apiKey="e5ser7od1hd5l0e4dqk05ppipnpprbm1oyowuzekc03dgynv"
+        apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
         value={content}
         onEditorChange={(value) => setContent(value)}
         init={{
