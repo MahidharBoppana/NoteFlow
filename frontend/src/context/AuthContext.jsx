@@ -13,6 +13,7 @@ function AuthProvider({ children }) {
     setToken(authToken);
 
     localStorage.setItem("token", authToken);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
@@ -22,15 +23,17 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    if (token) {
-      setUser({
-        name: "Demo User",
-        email: "demo@gmail.com",
-      });
-    }
-  }, [token]);
+    const storedToken = localStorage.getItem("token");
 
-  console.log(user);
+    const storedUser = localStorage.getItem("user");
+
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
 
   return (
     <AuthContext.Provider
