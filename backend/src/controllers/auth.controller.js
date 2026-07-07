@@ -13,6 +13,12 @@ const generateAccessTokenAndRefreshToken = async (userId) => {
   const accessToken = user.generateAccessToken();
   const refreshToken = user.generateRefreshToken();
 
+  user.refreshToken = refreshToken;
+
+  await user.save({
+    validateBeforeSave: false,
+  });
+
   return { accessToken, refreshToken };
 };
 
@@ -92,4 +98,62 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
-export { registerUser, loginUser, getCurrentUser };
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    throw new ApiError(400, "Refresh token is required");
+  }
+
+  const decoded = jwt.verify(
+    refreshToken,
+    process.env.JWT_REFRESH_TOKEN_SECRET,
+  );
+
+  const user = await User.findById(decoded._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (user.refreshToken !== refreshToken) {
+    throw new ApiError(401, "Invalid refresh token");
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } =
+    await generateAccessTokenAndRefreshToken(user._id);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken, refreshToken: newRefreshToken },
+        "Access token refreshed successfully",
+      ),
+    );
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1,
+      },
+    },
+    { new: true },
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "User logged out successfully"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  getCurrentUser,
+  refreshAccessToken,
+  logoutUser,
+};

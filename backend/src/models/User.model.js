@@ -22,6 +22,9 @@ const userSchema = new moongoose.Schema(
       required: true,
       minlength: 6,
     },
+    refreshToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,

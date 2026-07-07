@@ -56,7 +56,7 @@ const createNote = asyncHandler(async (req, res) => {
     content,
     category,
     owner: req.user._id,
-  });
+  }).sort({ updatedAt: -1 });
 
   return res
     .status(201)
@@ -87,7 +87,7 @@ const updateNote = asyncHandler(async (req, res) => {
     { _id: noteId, owner: req.user._id, isTrashed: false },
     { $set: updateData },
     { new: true, runValidators: true },
-  );
+  ).sort({ updatedAt: -1 });
 
   if (!updatedNote) {
     throw new ApiError(404, "Note not found");
@@ -130,6 +130,157 @@ const deleteNote = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, deletedNote, "Note trashed successfully"));
 });
 
+// Get Trashed Notes
+
+const getTrashedNotes = asyncHandler(async (req, res) => {
+  const trashedNotes = await Note.find({
+    owner: req.user._id,
+    isTrashed: true,
+  }).sort({
+    updatedAt: -1, // Sort by updatedAt in descending order
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, trashedNotes, "Trashed notes fetched successfully"),
+    );
+});
+
+// Get Restore Note
+
+const restoreNote = asyncHandler(async (req, res) => {
+  const { noteId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
+    throw new ApiError(400, "Invalid note ID");
+  }
+
+  const restoredNote = await Note.findOneAndUpdate(
+    {
+      owner: req.user._id,
+      _id: noteId,
+      isTrashed: true,
+    },
+    {
+      $set: { isTrashed: false },
+    },
+    {
+      new: true,
+    },
+  );
+
+  if (!restoredNote) {
+    throw new ApiError(404, "Note not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, restoredNote, "Note restored successfully"));
+});
+
+// Permanently Delete Note
+
+const deleteNotePermanently = asyncHandler(async (req, res) => {
+  const { noteId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
+    throw new ApiError(400, "Invalid note ID");
+  }
+
+  const deletedNote = await Note.findOneAndDelete({
+    _id: noteId,
+    owner: req.user._id,
+    isTrashed: true,
+  });
+
+  if (!deletedNote) {
+    throw new ApiError(404, "Note not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, deletedNote, "Note deleted permanently"));
+});
+
+// Pin / Unpin Note
+
+const togglePinNote = asyncHandler(async (req, res) => {
+  const { noteId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
+    throw new ApiError(400, "Invalid note ID");
+  }
+
+  const note = await Note.findOne({
+    _id: noteId,
+    owner: req.user._id,
+    isTrashed: false,
+  });
+
+  if (!note) {
+    throw new ApiError(404, "Note not found");
+  }
+
+  note.isPinned = !note.isPinned;
+  await note.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        note,
+        `Note ${note.isPinned ? "pinned" : "unpinned"} successfully`,
+      ),
+    );
+});
+
+const searchNotes = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+
+  if (!q || q.trim() === "") {
+    throw new ApiError(400, "Search query is required");
+  }
+
+  const notes = Note.find({
+    owner: req.user._id,
+    isTrashed: false,
+    $or: [
+      {
+        title: {
+          $regex: q,
+          $options: "i",
+        },
+      },
+      {
+        content: {
+          $regex: q,
+          $options: "i",
+        },
+      },
+      {
+        category: {
+          $regex: q,
+          $options: "i",
+        },
+      },
+    ],
+  }).sort({ updatedAt: -1 });
+
+  return res.status(200).json(new ApiResponse(200, notes, "Notes fetched successfully"))
 
 
-export { getNotes, getNoteById, createNote, updateNote, deleteNote };
+});
+
+export {
+  getNotes,
+  getNoteById,
+  createNote,
+  updateNote,
+  deleteNote,
+  getTrashedNotes,
+  restoreNote,
+  deleteNotePermanently,
+  togglePinNote,
+};
