@@ -22,6 +22,18 @@ function DashboardPage() {
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      showToast("Logged out successfully", "success");
+
+      navigate("/login");
+    } catch (error) {
+      showToast(error.message, "error");
+    }
+  };
+
   return (
     <MainLayout>
       <div className="flex mb-8 justify-between items-center">

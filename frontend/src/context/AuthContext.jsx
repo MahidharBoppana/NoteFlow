@@ -1,49 +1,84 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getCurrentUser } from "../api/auth.api";
+import { logoutUser } from "../api/auth.api";
 
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [loading, setLoading] = useState(true);
 
-  const login = (userData, authToken) => {
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem("accessToken"),
+  );
+
+  const login = (userData, token, refreshToken) => {
     setUser(userData);
 
-    setToken(authToken);
+    setAccessToken(token);
 
-    localStorage.setItem("token", authToken);
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("accessToken", token);
+
+    localStorage.setItem("refreshToken", refreshToken);
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
+  const logout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUser(null);
+
+      setAccessToken(null);
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+    }
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const checkAuth = async () => {
+      const token = localStorage.getItem("accessToken");
 
-    const storedUser = localStorage.getItem("user");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
+      try {
+        const result = await getCurrentUser();
 
-      setUser(JSON.parse(storedUser));
-    }
+        setUser(result.data);
+
+        setAccessToken(token);
+      } catch (error) {
+        logout();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
-
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
+
+        accessToken,
+
+        loading,
+
         login,
+
         logout,
 
-        isAuthenticated: !!token,
+        setUser,
+
+        isAuthenticated: !!accessToken,
       }}
     >
       {children}

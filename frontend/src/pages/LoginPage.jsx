@@ -101,7 +101,7 @@ function LoginPage() {
 
         <Typography className="mt-4 text-center">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-indigo-600 font-semibold">
+          <Link to="/register" className="text-indigo-600 font-semibold">
             Signup
           </Link>
         </Typography>

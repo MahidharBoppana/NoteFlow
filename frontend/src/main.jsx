@@ -11,16 +11,16 @@ import { ThemeProviderContext } from "./context/ThemeContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ThemeProviderContext>
-      <AuthProvider>
-        <NotesProvider>
-          <UIProvider>
-            <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProviderContext>
+        <UIProvider>
+          <AuthProvider>
+            <NotesProvider>
               <App />
-            </BrowserRouter>
-          </UIProvider>
-        </NotesProvider>
-      </AuthProvider>
-    </ThemeProviderContext>
+            </NotesProvider>
+          </AuthProvider>
+        </UIProvider>
+      </ThemeProviderContext>
+    </BrowserRouter>
   </React.StrictMode>,
 );

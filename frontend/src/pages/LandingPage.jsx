@@ -1,21 +1,22 @@
-import { Button, Container, Typography } from "@mui/material";
-import React from "react";
+import LandingNavbar from "../components/landing/LandingNavbar";
+import HeroSection from "../components/landing/HeroSection";
+import StatsSection from "../components/landing/StatsSection";
+import FeaturesSection from "../components/landing/FeatureSection";
+import HowItWorksSection from "../components/landing/HowItWorks";
+import CTASection from "../components/landing/CTASection";
+import Footer from "../components/landing/Footer";
 
 function LandingPage() {
   return (
-    <Container className="py-10">
-      <Typography variant="h1" gutterBottom>
-        NoteFlow
-      </Typography>
-
-      <Typography variant="body1" className="mb-6">
-        Modern rich-text notes application
-      </Typography>
-
-      <Button variant="contained" color="primary">
-        Get Started
-      </Button>
-    </Container>
+    <>
+      <LandingNavbar />
+      <HeroSection />
+      <StatsSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <CTASection />
+      <Footer />
+    </>
   );
 }
 

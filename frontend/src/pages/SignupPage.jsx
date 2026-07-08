@@ -3,13 +3,19 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import AuthLayout from "../components/layout/AuthLayout";
 import AuthInput from "../components/forms/AuthInput";
 import PasswordInput from "../components/forms/PasswordInput";
+import { register } from "../api/auth.api";
+import { useUI } from "../context/UIContext";
+import { useAuth } from "../context/AuthContext";
 
 function SignupPage() {
+  const { showToast } = useUI();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,10 +29,28 @@ function SignupPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    try {
+      const result = await register(formData);
+
+      login(
+        result.data.user,
+        result.data.accessToken,
+        result.data.refreshToken,
+      );
+
+      showToast(result.message, "success");
+
+      navigate("/dashboard");
+    } catch (error) {
+      showToast(error.message, "error");
+    }
   };
+
   return (
     <AuthLayout title="SignUp">
       <form onSubmit={handleSubmit}>
