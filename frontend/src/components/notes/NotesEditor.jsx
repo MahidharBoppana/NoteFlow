@@ -6,7 +6,6 @@ import { Editor } from "@tinymce/tinymce-react";
 
 import { useNotes } from "../../context/NotesContext";
 
-import { useUI } from "../../context/UIContext";
 
 function NotesEditor() {
   const {
@@ -16,8 +15,6 @@ function NotesEditor() {
     setSelectedNote,
     setOpenEditorModal,
   } = useNotes();
-
-  const { showToast } = useUI();
 
   const [title, setTitle] = useState("");
 

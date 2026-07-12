@@ -10,11 +10,12 @@ import {
   validateRequired,
   validatePassword,
 } from "../utils/Validators.js";
-import { useUI } from "../context/UIContext.jsx";
+
 import { useAuth } from "../context/AuthContext.jsx";
+import { login as loginUser } from "../api/auth.api";
+import { toast } from "sonner";
 
 function LoginPage() {
-  const { showToast } = useUI();
   const { login } = useAuth();
 
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function LoginPage() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,31 +52,44 @@ function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const isValid = validateForm();
 
     if (!isValid) {
-      showToast("Please fix validation errors", "error");
+      toast.error("Please fix validation errors");
       return;
     }
 
-    login(
-      {
-        name: "Mahidhar",
-        email: formData.email,
-      },
+    setLoading(true);
 
-      "demo-token",
-    );
+    try {
+      const credentials = {
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+      };
 
-    showToast("Login successfull", "success");
+      const result = await loginUser(credentials);
 
-    navigate("/dashboard");
+      login(
+        result.data.user,
+        result.data.accessToken,
+        result.data.refreshToken,
+      );
+
+      toast.success(result.message);
+
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
-    <AuthLayout title="Login">
+    <AuthLayout title="Login to Your Account">
       <form onSubmit={handleSubmit}>
         <AuthInput
           label="Email"
@@ -95,14 +110,23 @@ function LoginPage() {
           helperText={errors.password}
         />
 
-        <Button variant="contained" type="submit" fullWidth className="mt-4">
-          Login
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={loading}
+          className="!mt-6 !rounded-2xl !py-3"
+        >
+          {loading ? "Signing In..." : "Sign In"}
         </Button>
 
-        <Typography className="mt-4 text-center">
+        <Typography className="mt-4 text-center !text-gray-300">
           Don't have an account?{" "}
-          <Link to="/register" className="text-indigo-600 font-semibold">
-            Signup
+          <Link
+            to="/register"
+            className="font-semibold text-blue-500 hover:text-blue-400"
+          >
+            Create Account
           </Link>
         </Typography>
       </form>

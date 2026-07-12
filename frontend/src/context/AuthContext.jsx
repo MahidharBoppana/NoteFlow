@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getCurrentUser } from "../api/auth.api";
-import { logoutUser } from "../api/auth.api";
+
+import { getCurrentUser, logoutUser } from "../api/auth.api";
+
+import { getAccessToken, setTokens, clearTokens } from "../utils/token";
 
 const AuthContext = createContext();
 
@@ -9,18 +11,14 @@ function AuthProvider({ children }) {
 
   const [loading, setLoading] = useState(true);
 
-  const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("accessToken"),
-  );
+  const [accessToken, setAccessToken] = useState(getAccessToken());
 
-  const login = (userData, token, refreshToken) => {
+  const login = (userData, accessToken, refreshToken) => {
     setUser(userData);
 
-    setAccessToken(token);
+    setTokens(accessToken, refreshToken);
 
-    localStorage.setItem("accessToken", token);
-
-    localStorage.setItem("refreshToken", refreshToken);
+    setAccessToken(accessToken);
   };
 
   const logout = async () => {
@@ -29,20 +27,20 @@ function AuthProvider({ children }) {
     } catch (error) {
       console.error(error);
     } finally {
+      clearTokens();
+
       setUser(null);
 
       setAccessToken(null);
-
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
     }
   };
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("accessToken");
+    const initializeAuth = async () => {
+      const token = getAccessToken();
 
       if (!token) {
+        console.log("No token found");
         setLoading(false);
         return;
       }
@@ -52,28 +50,29 @@ function AuthProvider({ children }) {
 
         setUser(result.data);
 
-        setAccessToken(token);
+        setAccessToken(getAccessToken());
       } catch (error) {
-        logout();
+        clearTokens();
+
+        setUser(null);
+
+        setAccessToken(null);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuth();
+    initializeAuth();
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-
+        loading,
         accessToken,
 
-        loading,
-
         login,
-
         logout,
 
         setUser,

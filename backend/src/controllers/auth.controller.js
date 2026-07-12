@@ -2,6 +2,7 @@ import User from "../models/User.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiErrorHandler.js";
 import ApiResponse from "../utils/ApiResponseHandler.js";
+import jwt from "jsonwebtoken";
 
 const generateAccessTokenAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
@@ -25,7 +26,7 @@ const generateAccessTokenAndRefreshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  if ([name, email, password].some((field) => !field)) {
+  if ([name, email, password].some((field) => !field || !field.trim())) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -99,17 +100,19 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const { refreshToken } = req.body;
+  const refreshToken = req.body.refreshToken || req.header("x-refresh-token");
 
   if (!refreshToken) {
     throw new ApiError(400, "Refresh token is required");
   }
 
-  const decoded = jwt.verify(
-    refreshToken,
-    process.env.JWT_REFRESH_TOKEN_SECRET,
-  );
+  let decoded;
 
+  try {
+    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET);
+  } catch {
+    throw new ApiError(401, "Refresh token expired or invalid");
+  }
   const user = await User.findById(decoded._id);
 
   if (!user) {

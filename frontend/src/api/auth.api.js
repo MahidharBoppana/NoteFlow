@@ -1,4 +1,10 @@
+import { fetchWithAuth } from "./fetchWithAuth";
+
 const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+// ======================
+// Register
+// ======================
 
 export const register = async (userData) => {
   const response = await fetch(`${API_URL}/auth/register`, {
@@ -12,39 +18,59 @@ export const register = async (userData) => {
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.message || "Registration Failed");
+    throw new Error(result.message || "Registration failed");
   }
 
   return result;
 };
 
-export const getCurrentUser = async () => {
-  const token = localStorage.getItem("accessToken");
+// ======================
+// Login
+// ======================
 
-  const response = await fetch(`${API_URL}/auth/me`, {
-    method: "GET",
+export const login = async (userData) => {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify(userData),
   });
 
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.message || "Failed to get current user");
+    throw new Error(result.message || "Login failed");
   }
 
   return result;
 };
 
-export const logoutUser = async () => {
-  const token = localStorage.getItem("accessToken");
+// ======================
+// Current User
+// ======================
 
-  const response = await fetch(`${API_URL}/auth/logout`, {
+export const getCurrentUser = async () => {
+  const response = await fetchWithAuth("/auth/me", {
+    method: "GET",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to fetch current user");
+  }
+
+  return result;
+};
+
+// ======================
+// Logout
+// ======================
+
+export const logoutUser = async () => {
+  const response = await fetchWithAuth("/auth/logout", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   const result = await response.json();
@@ -55,4 +81,3 @@ export const logoutUser = async () => {
 
   return result;
 };
-

@@ -9,12 +9,13 @@ import AuthLayout from "../components/layout/AuthLayout";
 import AuthInput from "../components/forms/AuthInput";
 import PasswordInput from "../components/forms/PasswordInput";
 import { register } from "../api/auth.api";
-import { useUI } from "../context/UIContext";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
 
 function SignupPage() {
-  const { showToast } = useUI();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -34,8 +35,32 @@ function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
-      const result = await register(formData);
+      if (!formData.name.trim()) {
+        return toast.error("Name is required");
+      }
+
+      if (!formData.email.trim()) {
+        return toast.error("Email is required");
+      }
+
+      if (!formData.password) {
+        return toast.error("Password is required");
+      }
+
+      if (formData.password.length < 6) {
+        return toast.error("Password must be at least 6 characters");
+      }
+
+      const userData = {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+      };
+
+      const result = await register(userData);
 
       login(
         result.data.user,
@@ -43,16 +68,18 @@ function SignupPage() {
         result.data.refreshToken,
       );
 
-      showToast(result.message, "success");
+      toast.success(result.message);
 
       navigate("/dashboard");
     } catch (error) {
-      showToast(error.message, "error");
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <AuthLayout title="SignUp">
+    <AuthLayout title="Create Account">
       <form onSubmit={handleSubmit}>
         <AuthInput
           label="Full Name"
@@ -76,14 +103,23 @@ function SignupPage() {
           onChange={handleChange}
         />
 
-        <Button type="submit" variant="contained" fullWidth className="mt-4">
-          Signup
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={loading}
+          className="!mt-6 !rounded-2xl !py-3"
+        >
+          {loading ? "Creating Account..." : "Create Account"}
         </Button>
 
-        <Typography className="mt-4 text-center">
+        <Typography className="mt-6 text-center !text-gray-300">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 font-semibold">
-            login
+          <Link
+            to="/login"
+            className="font-semibold text-blue-500 hover:text-blue-400"
+          >
+            Sign In
           </Link>
         </Typography>
       </form>
