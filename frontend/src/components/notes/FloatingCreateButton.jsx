@@ -1,21 +1,42 @@
-import Fab from "@mui/material/Fab";
-
 import AddIcon from "@mui/icons-material/Add";
 
 function FloatingCreateButton({ onClick }) {
   return (
-    <Fab
-      color="primary"
+    <button
       onClick={onClick}
-      sx={{
-        position: "fixed",
-        bottom: 100,
-        right: 100,
-        zIndex: 2000,
-      }}
+      className="
+        fixed
+        bottom-6
+        right-6
+        z-50
+
+        flex
+        h-16
+        w-16
+        items-center
+        justify-center
+
+        rounded-2xl
+        bg-blue-600
+        text-white
+
+        shadow-2xl
+        shadow-blue-600/30
+
+        transition-all
+        duration-300
+
+        hover:scale-105
+        hover:bg-blue-700
+        active:scale-95
+
+        lg:bottom-10
+        lg:right-10
+      "
+      aria-label="Create Note"
     >
-      <AddIcon />
-    </Fab>
+      <AddIcon fontSize="medium" />
+    </button>
   );
 }
 

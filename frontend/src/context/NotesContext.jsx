@@ -1,126 +1,53 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+
+import { getNotes } from "../api/note.api";
 
 const NotesContext = createContext();
 
 function NotesProvider({ children }) {
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
+  const [notes, setNotes] = useState([]);
 
-      title: "Welcome Note",
+  const [loading, setLoading] = useState(true);
 
-      content: "This is your first note.",
-
-      isPinned: false,
-
-      category: "Personal",
-      isTrashed: false,
-
-      createdAt: new Date().toISOString(),
-    },
-  ]);
+  const [error, setError] = useState(null);
 
   const [selectedNote, setSelectedNote] = useState(null);
 
   const [openEditorModal, setOpenEditorModal] = useState(false);
 
-  const addNote = (note) => {
-    const newNote = {
-      id: Date.now(),
+  const fetchNotes = async () => {
+    setLoading(true);
 
-      ...note,
+    try {
+      const result = await getNotes();
 
-      isPinned: false,
-      isTrashed: false,
-      createdAt: new Date().toISOString(),
-    };
+      setNotes(result.data);
 
-    setNotes((prevNotes) => [newNote, ...prevNotes]);
+      setError(null);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteNote = (id) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) => {
-        if (note.id === id) {
-          return {
-            ...note,
-            isTrashed: true,
-          };
-        }
-        return note;
-      }),
-    );
-  };
-
-  const restoreNote = (id) => {
-
-  setNotes((prevNotes) =>
-    prevNotes.map((note) => {
-
-      if (note.id === id) {
-
-        return {
-          ...note,
-          isTrashed: false,
-        };
-      }
-
-      return note;
-    })
-  );
-};
-
-const permanentlyDeleteNote = (id) => {
-
-  setNotes((prevNotes) =>
-    prevNotes.filter(
-      (note) => note.id !== id
-    )
-  );
-};
-
-  const updateNote = (id, updatedData) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) => {
-        if (note.id === id) {
-          return {
-            ...note,
-            ...updatedData,
-          };
-        }
-
-        return note;
-      }),
-    );
-  };
-
-  const togglePinNote = (id) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) => {
-        if (note.id === id) {
-          return {
-            ...note,
-
-            isPinned: !note.isPinned,
-          };
-        }
-        return note;
-      }),
-    );
-  };
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   return (
     <NotesContext.Provider
       value={{
         notes,
-        addNote,
-        deleteNote,
-        restoreNote,
-permanentlyDeleteNote,
-        updateNote,
-        togglePinNote,
+        loading,
+        error,
+
+        fetchNotes,
+        setNotes,
+
         selectedNote,
         setSelectedNote,
+
         openEditorModal,
         setOpenEditorModal,
       }}

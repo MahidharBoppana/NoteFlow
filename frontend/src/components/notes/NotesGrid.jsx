@@ -1,47 +1,48 @@
-import { Grid } from "@mui/material";
-
-import { useNotes } from "../../context/NotesContext";
-
 import NotesCard from "./NotesCard";
 import EmptyNotes from "./EmptyNotes";
 
-function NotesGrid({ searchQuery }) {
-  const { notes } = useNotes();
-
+function NotesGrid({ notes, searchQuery }) {
   const filteredNotes = notes.filter((note) => {
+    if (note.isTrashed) return false;
 
-    if(note.isTrashed){
-      return false;
-    }
+    const search = (searchQuery || "").toLowerCase();
 
-    const searchText = (searchQuery || "").toLowerCase();
-
-    const titleMatch = note.title.toLowerCase().includes(searchText);
+    const titleMatch = note.title.toLowerCase().includes(search);
 
     const contentMatch = note.content
       .replace(/<[^>]*>/g, "")
       .toLowerCase()
-      .includes(searchText);
+      .includes(search);
 
     return titleMatch || contentMatch;
   });
 
   const sortedNotes = [...filteredNotes].sort(
-    (a, b) => b.isPinned - a.isPinned,
+    (a, b) => Number(b.isPinned) - Number(a.isPinned),
   );
 
-  if (filteredNotes.length === 0) {
+  if (sortedNotes.length === 0) {
     return <EmptyNotes />;
   }
 
   return (
-    <Grid container spacing={3}>
+    <div
+      className="
+        grid
+        grid-cols-1
+        gap-6
+
+        sm:grid-cols-2
+
+        xl:grid-cols-3
+
+        2xl:grid-cols-4
+      "
+    >
       {sortedNotes.map((note) => (
-        <Grid item xs={12} sm={6} md={4} key={note.id}>
-          <NotesCard note={note} />
-        </Grid>
+        <NotesCard key={note._id} note={note} />
       ))}
-    </Grid>
+    </div>
   );
 }
 

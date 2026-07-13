@@ -1,166 +1,132 @@
 import { useState } from "react";
 
-import {
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-  Box,
-  Button,
-} from "@mui/material";
-
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import PushPinIcon from "@mui/icons-material/PushPin";
 
 import { useNotes } from "../../context/NotesContext";
 
 import NoteViewerModal from "./NoteViewerModal";
 
-import EditIcon from "@mui/icons-material/Edit";
-
-import PushPinIcon from "@mui/icons-material/PushPin";
-
 function NotesCard({ note }) {
-  const { deleteNote, setSelectedNote, setOpenEditorModal, togglePinNote } =
+  const { deleteNote, togglePinNote, setSelectedNote, setOpenEditorModal } =
     useNotes();
 
   const [openViewer, setOpenViewer] = useState(false);
 
   return (
     <>
-      <Card
-        elevation={0}
+      <div
         className="
-        w-[535px]
-          h-[320px]
-          rounded-2xl
-          border
-          border-gray-200
+          flex h-full flex-col
+          rounded-3xl
+          border border-slate-800
+          bg-slate-900
+          p-6
+
+          shadow-lg
+
           transition-all
           duration-300
-          hover:-translate-y-1
-          hover:shadow-xl
-          flex
-          flex-col
-          justify-between
+
+          hover:-translate-y-2
+          hover:border-blue-500/50
+          hover:shadow-blue-500/10
+          hover:shadow-2xl
         "
       >
-        <CardContent
-          className="
-            flex
-            flex-col
-            h-full
-          "
-        >
-          <Box
-            className="
-              flex
-              justify-between
-              items-start
-            "
-          >
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              className="
-                line-clamp-1
-              "
-            >
+        {/* Header */}
+        <div className="mb-5 flex items-start justify-between">
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold text-white">
               {note.title}
-            </Typography>
+            </h2>
 
-            <div>
-              <IconButton
-                onClick={() => {
-                  togglePinNote(note.id);
-                }}
-                sx={{
-                  color: note.isPinned ? "#f59e0b" : "#9ca3af",
-                }}
-              >
-                <PushPinIcon />
-              </IconButton>
+            <p className="mt-2 text-sm text-slate-500">
+              {new Date(note.createdAt).toLocaleDateString()}
+            </p>
+          </div>
 
-              <IconButton
-                onClick={() => {
-                  setSelectedNote(note);
-                  setOpenEditorModal(true);
-                }}
-                sx={{
-                  color: "#2563eb",
-                }}
-              >
-                <EditIcon />
-              </IconButton>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => togglePinNote(note._id)}
+              className={`rounded-xl p-2 transition ${
+                note.isPinned
+                  ? "text-amber-400"
+                  : "text-slate-500 hover:bg-slate-800 hover:text-white"
+              }`}
+            >
+              <PushPinIcon fontSize="small" />
+            </button>
 
-              <IconButton
-                onClick={() => deleteNote(note.id)}
-                sx={{
-                  color: "#ef4444",
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </div>
-          </Box>
+            <button
+              onClick={() => {
+                setSelectedNote(note);
+                setOpenEditorModal(true);
+              }}
+              className="rounded-xl p-2 text-blue-400 transition hover:bg-slate-800"
+            >
+              <EditIcon fontSize="small" />
+            </button>
 
-          <Typography
-            variant="body2"
-            className="
-            break-words
-    mt-4
-    text-gray-600
-    leading-6
-    overflow-hidden
-    flex-1
-  "
-            sx={{
+            <button
+              onClick={() => deleteNote(note._id)}
+              className="rounded-xl p-2 text-red-400 transition hover:bg-slate-800"
+            >
+              <DeleteIcon fontSize="small" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1">
+          <p
+            className="text-sm leading-7 text-slate-400"
+            style={{
               display: "-webkit-box",
               WebkitLineClamp: 6,
               WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
             {note.content.replace(/<[^>]*>/g, "")}
-          </Typography>
+          </p>
+        </div>
 
-          <div className="mt-4">
-            <div className="flex justify-between mb-5 items-center">
-              <Typography
-                variant="caption"
-                className="
-                text-gray-400
-                block
-                mb-3
-              "
-              >
-                {new Date(note.createdAt).toLocaleDateString()}
-              </Typography>
+        {/* Footer */}
+        <div className="mt-6 space-y-5">
+          <div className="flex items-center justify-between">
+            <span className="rounded-full bg-blue-600/15 px-3 py-1 text-xs font-medium text-blue-400">
+              {note.category || "General"}
+            </span>
 
-              <Typography
-                variant="caption"
-                className="
-    inline-block
-    px-3
-    py-1
-    rounded-full
-    bg-blue-100
-    text-blue-700
-    mb-3
-  "
-              >
-                {note.category}
-              </Typography>
-            </div>
-
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => setOpenViewer(true)}
-            >
-              View Note
-            </Button>
+            {note.isPinned && (
+              <span className="text-xs font-medium text-amber-400">
+                📌 Pinned
+              </span>
+            )}
           </div>
-        </CardContent>
-      </Card>
+
+          <button
+            onClick={() => setOpenViewer(true)}
+            className="
+              w-full
+              rounded-2xl
+              bg-blue-600
+              py-3
+
+              font-medium
+              text-white
+
+              transition
+
+              hover:bg-blue-700
+            "
+          >
+            View Note
+          </button>
+        </div>
+      </div>
 
       <NoteViewerModal
         open={openViewer}

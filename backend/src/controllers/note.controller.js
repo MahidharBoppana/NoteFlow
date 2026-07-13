@@ -56,7 +56,7 @@ const createNote = asyncHandler(async (req, res) => {
     content,
     category,
     owner: req.user._id,
-  }).sort({ updatedAt: -1 });
+  });
 
   return res
     .status(201)
@@ -87,7 +87,7 @@ const updateNote = asyncHandler(async (req, res) => {
     { _id: noteId, owner: req.user._id, isTrashed: false },
     { $set: updateData },
     { new: true, runValidators: true },
-  ).sort({ updatedAt: -1 });
+  );
 
   if (!updatedNote) {
     throw new ApiError(404, "Note not found");
@@ -243,7 +243,7 @@ const searchNotes = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Search query is required");
   }
 
-  const notes = Note.find({
+  const notes = await Note.find({
     owner: req.user._id,
     isTrashed: false,
     $or: [
@@ -268,9 +268,9 @@ const searchNotes = asyncHandler(async (req, res) => {
     ],
   }).sort({ updatedAt: -1 });
 
-  return res.status(200).json(new ApiResponse(200, notes, "Notes fetched successfully"))
-
-
+  return res
+    .status(200)
+    .json(new ApiResponse(200, notes, "Notes fetched successfully"));
 });
 
 export {
@@ -283,4 +283,5 @@ export {
   restoreNote,
   deleteNotePermanently,
   togglePinNote,
+  searchNotes,
 };

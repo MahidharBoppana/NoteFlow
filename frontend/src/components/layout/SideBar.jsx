@@ -1,81 +1,85 @@
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  ListItemIcon,
-  Toolbar,
-} from "@mui/material";
-
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PersonIcon from "@mui/icons-material/Person";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Dashboard, Delete, Person } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
-
-const drawerWidth = 240;
 
 const navItems = [
   {
     label: "Dashboard",
     path: "/dashboard",
-    icon: <DashboardIcon />,
+    icon: <Dashboard />,
   },
-
   {
     label: "Profile",
     path: "/profile",
-    icon: <PersonIcon />,
+    icon: <Person />,
   },
-
   {
     label: "Trash",
     path: "/trash",
-    icon: <DeleteIcon />,
+    icon: <Delete />,
   },
 ];
 
 function SideBar() {
-  const theme = useTheme();
   return (
-    <Drawer
-      variant="permanent"
-      style={{
-        backgroundColor: theme.palette.background.paper,
-
-        color: theme.palette.text.primary,
-      }}
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-        },
-      }}
+    <aside
+      className="
+    fixed
+    left-0
+    top-0
+    z-50
+    hidden
+    h-screen
+    w-72
+    flex-col
+    border-r
+    border-slate-800
+    bg-slate-950
+    lg:flex
+  "
     >
-      <Toolbar />
-      <List>
-        {navItems.map((item) => (
-          <ListItem key={item.path} disablePadding>
-            <ListItemButton
-              component={NavLink}
+      {/* Navigation */}
+      <div className="flex-1 px-5 pt-8">
+        <p className="mb-6 px-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Navigation
+        </p>
+
+        <nav className="space-y-2">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
               to={item.path}
-              sx={{
-                "&.active": {
-                  backgroundColor: "#e0e7ff",
-                  color: "#4338ca",
-                },
-              }}
+              className={({ isActive }) =>
+                `group flex items-center gap-4 rounded-2xl px-4 py-4 transition-all duration-300 ${
+                  isActive
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                    : "text-slate-400 hover:bg-slate-900 hover:text-white"
+                }`
+              }
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
+              <span className="transition-transform duration-300 group-hover:scale-110">
+                {item.icon}
+              </span>
+
+              <span className="font-medium">{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+
+      {/* Bottom Card */}
+      <div className="border-t border-slate-800 p-5">
+        <div className="rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-600 to-indigo-600 p-5 shadow-xl">
+          <h3 className="mb-2 text-lg font-semibold text-white">
+            Stay Organized 🚀
+          </h3>
+
+          <p className="text-sm leading-6 text-blue-100">
+            Capture ideas, organize your work and boost your productivity with
+            NoteFlow.
+          </p>
+        </div>
+      </div>
+    </aside>
   );
 }
 

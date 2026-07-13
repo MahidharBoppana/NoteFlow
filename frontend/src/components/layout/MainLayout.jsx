@@ -1,31 +1,24 @@
-import { Box, Toolbar } from "@mui/material";
-import NavBar from "./NavBar.jsx";
-import SideBar from "./SideBar.jsx";
-import { useTheme } from "@mui/material/styles";
+import { useState } from "react";
+
+import NavBar from "./NavBar";
+import SideBar from "./SideBar";
+import MobileDrawer from "./MobileDrawer";
 
 function MainLayout({ children }) {
-  const theme = useTheme();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
-    <Box
-      style={{
-        backgroundColor: theme.palette.background.default,
-
-        color: theme.palette.text.primary,
-
-        minHeight: "100vh",
-      }}
-      sx={{ display: "flex", padding: "20px" }}
-    >
+    <div className="min-h-screen bg-slate-950 text-white">
       <SideBar />
 
-      <Box sx={{ flexGrow: 1 }}>
-        <NavBar />
+      <MobileDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} />
 
-        <Toolbar />
+      <div className="flex min-h-screen flex-1 flex-col lg:ml-72">
+        <NavBar onMenuClick={() => setMobileOpen(true)} />
 
-        <Box className="p-6">{children}</Box>
-      </Box>
-    </Box>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+      </div>
+    </div>
   );
 }
 
