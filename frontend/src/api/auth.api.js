@@ -2,9 +2,8 @@ import { fetchWithAuth } from "./fetchWithAuth";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-// ======================
+
 // Register
-// ======================
 
 export const register = async (userData) => {
   const response = await fetch(`${API_URL}/auth/register`, {

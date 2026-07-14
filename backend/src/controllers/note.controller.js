@@ -136,9 +136,7 @@ const getTrashedNotes = asyncHandler(async (req, res) => {
   const trashedNotes = await Note.find({
     owner: req.user._id,
     isTrashed: true,
-  }).sort({
-    updatedAt: -1, // Sort by updatedAt in descending order
-  });
+  })
 
   return res
     .status(200)

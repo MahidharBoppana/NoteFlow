@@ -1,10 +1,15 @@
+import { useEffect } from "react";
 import MainLayout from "../components/layout/MainLayout";
 import TrashGrid from "../components/notes/TrashGrid";
 
 import { useNotes } from "../context/NotesContext";
 
 function TrashPage() {
-  const { notes, loading, error } = useNotes();
+  const { trashedNotes, fetchTrashedNotes, loading, error } = useNotes();
+
+  useEffect(() => {
+    fetchTrashedNotes();
+  }, []);
 
   if (loading) {
     return (
@@ -26,7 +31,7 @@ function TrashPage() {
     );
   }
 
-  const trashedNotes = notes.filter((note) => note.isTrashed);
+  
 
   return (
     <MainLayout>
@@ -60,7 +65,7 @@ function TrashPage() {
       </section>
 
       {/* Trash Grid */}
-      <TrashGrid notes={notes} />
+      <TrashGrid notes={trashedNotes} />
     </MainLayout>
   );
 }

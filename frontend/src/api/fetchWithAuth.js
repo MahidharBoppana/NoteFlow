@@ -9,6 +9,7 @@ import {
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 async function refreshAccessToken() {
+  console.log("Access Token:", getAccessToken());
   const refreshToken = getRefreshToken();
 
   if (!refreshToken) {
@@ -38,7 +39,6 @@ async function refreshAccessToken() {
 
   return accessToken;
 }
-
 
 export async function fetchWithAuth(url, options = {}) {
   let accessToken = getAccessToken();

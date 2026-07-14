@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import MainLayout from "../components/layout/MainLayout";
 import NotesGrid from "../components/notes/NotesGrid";
@@ -12,14 +12,29 @@ import { useAuth } from "../context/AuthContext";
 import useDebounce from "../hooks/useDebounce";
 
 function DashboardPage() {
-  const { notes, loading, error, openEditorModal, setOpenEditorModal } =
-    useNotes();
+  const {
+    notes,
+    loading,
+    error,
+    openEditorModal,
+    setOpenEditorModal,
+    searchNotes,
+    fetchNotes,
+  } = useNotes();
 
   const { user } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState("");
 
   const debouncedSearch = useDebounce(searchQuery, 500);
+
+  useEffect(() => {
+    if (debouncedSearch.trim()) {
+      searchNotes(debouncedSearch);
+    } else {
+      fetchNotes();
+    }
+  }, [debouncedSearch]);
 
   if (loading) {
     return (
@@ -107,7 +122,7 @@ function DashboardPage() {
       </section>
 
       {/* Notes */}
-      <NotesGrid notes={notes} searchQuery={debouncedSearch} />
+      <NotesGrid notes={notes} />
 
       {/* Floating Button */}
       <FloatingCreateButton onClick={() => setOpenEditorModal(true)} />
