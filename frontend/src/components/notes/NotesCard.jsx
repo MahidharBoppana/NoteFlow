@@ -64,14 +64,14 @@ function NotesCard({ note }) {
                 setSelectedNote(note);
                 setOpenEditorModal(true);
               }}
-              className="rounded-xl p-2 text-blue-400 transition hover:bg-slate-800"
+              className="rounded-xl p-2 text-blue-400 transition hover:bg-slate-800 cursor-pointer"
             >
               <EditIcon fontSize="small" />
             </button>
 
             <button
               onClick={() => deleteNote(note._id)}
-              className="rounded-xl p-2 text-red-400 transition hover:bg-slate-800"
+              className="rounded-xl p-2 text-red-400 transition hover:bg-slate-800 cursor-pointer"
             >
               <DeleteIcon fontSize="small" />
             </button>
@@ -101,7 +101,7 @@ function NotesCard({ note }) {
             </span>
 
             {note.isPinned && (
-              <span className="text-xs font-medium text-amber-400">
+              <span className="text-xs font-medium text-amber-400 cursor-pointer">
                 📌 Pinned
               </span>
             )}
@@ -121,6 +121,7 @@ function NotesCard({ note }) {
               transition
 
               hover:bg-blue-700
+              cursor-pointer
             "
           >
             View Note

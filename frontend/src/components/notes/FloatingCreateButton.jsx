@@ -32,6 +32,7 @@ function FloatingCreateButton({ onClick }) {
 
         lg:bottom-10
         lg:right-10
+        cursor-pointer
       "
       aria-label="Create Note"
     >

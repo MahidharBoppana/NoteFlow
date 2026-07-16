@@ -121,6 +121,7 @@ function TrashCard({ note }) {
 
     disabled:cursor-not-allowed
     disabled:opacity-70
+    cursor-pointer
   "
           >
             {restoring ? (
@@ -155,6 +156,7 @@ function TrashCard({ note }) {
 
     disabled:cursor-not-allowed
     disabled:opacity-70
+    cursor-pointer
   "
           >
             {deleting ? (

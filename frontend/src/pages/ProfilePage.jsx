@@ -95,6 +95,7 @@ function ProfilePage() {
                 transition
 
                 hover:bg-red-700
+                cursor-pointer
               "
             >
               {loading ? (
