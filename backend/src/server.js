@@ -6,7 +6,7 @@ const app = express();
 console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN);
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "https://note-flow-eight-inky.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   }),
