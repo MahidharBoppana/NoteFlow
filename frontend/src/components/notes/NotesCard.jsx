@@ -54,7 +54,7 @@ function NotesCard({ note }) {
                 note.isPinned
                   ? "text-amber-400"
                   : "text-slate-500 hover:bg-slate-800 hover:text-white"
-              }`}
+              } cursor-pointer`}
             >
               <PushPinIcon fontSize="small" />
             </button>
@@ -101,7 +101,7 @@ function NotesCard({ note }) {
             </span>
 
             {note.isPinned && (
-              <span className="text-xs font-medium text-amber-400 cursor-pointer">
+              <span className="text-xs font-medium text-amber-400 ">
                 📌 Pinned
               </span>
             )}
