@@ -28,7 +28,7 @@ function HeroSection() {
           <div className="flex flex-wrap gap-4">
             <Button
               component={Link}
-              to="/signup"
+              to="/register"
               variant="contained"
               size="large"
             >
@@ -63,7 +63,6 @@ function HeroSection() {
           </div>
         </div>
 
-   
         {/* Right */}
         <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-md transition-all duration-300 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900">
           <div className="mb-6 flex items-center justify-between">

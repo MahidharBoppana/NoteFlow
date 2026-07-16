@@ -1,16 +1,11 @@
 import { Link } from "react-router-dom";
 
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import HomeIcon from "@mui/icons-material/Home";
 
 function NotFoundPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950 px-6">
       <div className="w-full max-w-2xl rounded-3xl border border-slate-800 bg-slate-900 p-10 text-center shadow-2xl">
-        {/* Icon */}
-        <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-blue-600/10">
-          <ErrorOutlineIcon sx={{ fontSize: 54 }} className="text-blue-500" />
-        </div>
 
         {/* 404 */}
         <h1 className="mb-3 text-7xl font-extrabold text-white">404</h1>
