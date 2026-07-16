@@ -3,8 +3,6 @@ import NotesEditor from "./NotesEditor";
 import { useEffect } from "react";
 
 function NoteModal({ open, onClose }) {
-  if (!open) return null;
-
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -18,6 +16,8 @@ function NoteModal({ open, onClose }) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
+
+  if (!open) return null;
 
   return (
     <>

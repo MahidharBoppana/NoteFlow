@@ -14,6 +14,7 @@ import {
 import { useAuth } from "../context/AuthContext.jsx";
 import { login as loginUser } from "../api/auth.api";
 import { toast } from "sonner";
+import LoadingDots from "../utils/loadingDots.jsx";
 
 function LoginPage() {
   const { login } = useAuth();
@@ -33,6 +34,7 @@ function LoginPage() {
   };
 
   const validateForm = () => {
+    setErrors({});
     const newErrors = {};
 
     if (!validateRequired(formData.email)) {
@@ -54,6 +56,8 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading) return;
 
     const isValid = validateForm();
 
@@ -82,7 +86,7 @@ function LoginPage() {
 
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Unable to sign in.");
     } finally {
       setLoading(false);
     }
@@ -115,9 +119,9 @@ function LoginPage() {
           variant="contained"
           fullWidth
           disabled={loading}
-          className="!mt-6 !rounded-2xl !py-3"
+          className="!mt-6 !rounded-2xl !py-3 disabled:!cursor-not-allowed disabled:!opacity-70"
         >
-          {loading ? "Signing In..." : "Sign In"}
+          {loading ? <LoadingDots /> : "Sign In"}
         </Button>
 
         <Typography className="mt-4 text-center !text-gray-300">

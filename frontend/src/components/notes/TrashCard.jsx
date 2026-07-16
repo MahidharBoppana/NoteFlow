@@ -1,10 +1,47 @@
 import RestoreIcon from "@mui/icons-material/Restore";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useState } from "react";
+import { toast } from "sonner";
+import LoadingDots from "../../utils/loadingDots";
 
 import { useNotes } from "../../context/NotesContext";
 
 function TrashCard({ note }) {
   const { restoreNote, permanentlyDeleteNote } = useNotes();
+  const [restoring, setRestoring] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleRestore = async () => {
+    if (restoring) return;
+
+    try {
+      setRestoring(true);
+
+      await restoreNote(note._id);
+
+      toast.success("Note restored successfully.");
+    } catch (error) {
+      toast.error(error.message || "Failed to restore note.");
+    } finally {
+      setRestoring(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (deleting) return;
+
+    try {
+      setDeleting(true);
+
+      await permanentlyDeleteNote(note._id);
+
+      toast.success("Note permanently deleted.");
+    } catch (error) {
+      toast.error(error.message || "Failed to delete note.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div
@@ -60,54 +97,74 @@ function TrashCard({ note }) {
 
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => restoreNote(note._id)}
+            onClick={handleRestore}
+            disabled={restoring || deleting}
             className="
-              flex
-              items-center
-              justify-center
-              gap-2
+    flex
+    items-center
+    justify-center
+    gap-2
 
-              rounded-2xl
-              border
-              border-emerald-500/30
+    rounded-2xl
+    border
+    border-emerald-500/30
 
-              bg-emerald-500/10
-              py-3
+    bg-emerald-500/10
+    py-3
 
-              text-emerald-400
+    text-emerald-400
 
-              transition-all
+    transition-all
 
-              hover:bg-emerald-500
-              hover:text-white
-            "
+    hover:bg-emerald-500
+    hover:text-white
+
+    disabled:cursor-not-allowed
+    disabled:opacity-70
+  "
           >
-            <RestoreIcon fontSize="small" />
-            Restore
+            {restoring ? (
+              <LoadingDots />
+            ) : (
+              <>
+                <RestoreIcon fontSize="small" />
+                Restore
+              </>
+            )}
           </button>
 
           <button
-            onClick={() => permanentlyDeleteNote(note._id)}
+            onClick={handleDelete}
+            disabled={restoring || deleting}
             className="
-              flex
-              items-center
-              justify-center
-              gap-2
+    flex
+    items-center
+    justify-center
+    gap-2
 
-              rounded-2xl
+    rounded-2xl
 
-              bg-red-600
-              py-3
+    bg-red-600
+    py-3
 
-              text-white
+    text-white
 
-              transition-all
+    transition-all
 
-              hover:bg-red-700
-            "
+    hover:bg-red-700
+
+    disabled:cursor-not-allowed
+    disabled:opacity-70
+  "
           >
-            <DeleteForeverIcon fontSize="small" />
-            Delete
+            {deleting ? (
+              <LoadingDots />
+            ) : (
+              <>
+                <DeleteForeverIcon fontSize="small" />
+                Delete
+              </>
+            )}
           </button>
         </div>
       </div>

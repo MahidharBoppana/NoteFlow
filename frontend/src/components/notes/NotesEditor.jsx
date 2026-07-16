@@ -3,6 +3,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "sonner";
 
 import { useNotes } from "../../context/NotesContext";
+import LoadingDots from "../../utils/loadingDots";
 
 const categories = ["Personal", "Work", "Study", "Ideas"];
 
@@ -18,6 +19,7 @@ function NotesEditor() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("Personal");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!selectedNote) return;
@@ -28,10 +30,14 @@ function NotesEditor() {
   }, [selectedNote]);
 
   const handleSubmit = async () => {
+    if (saving) return;
+
     if (!title.trim() || !content.trim()) {
       toast.error("Title and content are required.");
       return;
     }
+
+    setSaving(true);
 
     try {
       if (selectedNote) {
@@ -59,7 +65,9 @@ function NotesEditor() {
       setSelectedNote(null);
       setOpenEditorModal(false);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Something went wrong.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -138,21 +146,16 @@ function NotesEditor() {
 
       <button
         onClick={handleSubmit}
-        className="
-          w-full
-          rounded-2xl
-          bg-blue-600
-          py-3
-
-          font-semibold
-          text-white
-
-          transition
-
-          hover:bg-blue-700
-        "
+        disabled={saving}
+        className="flex w-full items-center justify-center rounded-2xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {selectedNote ? "Update Note" : "Create Note"}
+        {saving ? (
+          <LoadingDots />
+        ) : selectedNote ? (
+          "Update Note"
+        ) : (
+          "Create Note"
+        )}
       </button>
     </div>
   );

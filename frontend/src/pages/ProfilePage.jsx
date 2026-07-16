@@ -10,12 +10,13 @@ import EmailIcon from "@mui/icons-material/Email";
 import DescriptionIcon from "@mui/icons-material/Description";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import CategoryIcon from "@mui/icons-material/Category";
+import LoadingDots from "../utils/loadingDots";
 
 function ProfilePage() {
   const navigate = useNavigate();
 
   const { user, logout } = useAuth();
-  const { notes } = useNotes();
+  const { notes, loading, error } = useNotes();
 
   const activeNotes = notes.filter((note) => !note.isTrashed);
 
@@ -29,6 +30,28 @@ function ProfilePage() {
     await logout();
     navigate("/login");
   };
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="flex min-h-[70vh] items-center justify-center">
+          <p className="text-lg font-medium text-slate-400">
+            Loading profile...
+          </p>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <div className="rounded-3xl border border-red-500/20 bg-red-500/10 p-8 text-red-400">
+          {error}
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -74,8 +97,14 @@ function ProfilePage() {
                 hover:bg-red-700
               "
             >
-              <LogoutIcon fontSize="small" />
-              Logout
+              {loading ? (
+                <LoadingDots />
+              ) : (
+                <>
+                  <LogoutIcon fontSize="small" />
+                  Logout
+                </>
+              )}
             </button>
           </div>
         </div>
