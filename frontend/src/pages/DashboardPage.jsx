@@ -18,6 +18,7 @@ function DashboardPage() {
     error,
     openEditorModal,
     setOpenEditorModal,
+    setSelectedNote,
     searchNotes,
     fetchNotes,
   } = useNotes();
@@ -127,6 +128,7 @@ function DashboardPage() {
       {/* Floating Button */}
       <FloatingCreateButton
         onClick={() => {
+          setSelectedNote(null);
           setOpenEditorModal(true);
         }}
       />
@@ -135,6 +137,7 @@ function DashboardPage() {
       <NotesModal
         open={openEditorModal}
         onClose={() => {
+          setSelectedNote(null);
           setOpenEditorModal(false);
         }}
       />
