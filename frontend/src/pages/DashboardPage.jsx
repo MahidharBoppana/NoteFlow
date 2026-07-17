@@ -125,12 +125,20 @@ function DashboardPage() {
       <NotesGrid notes={notes} />
 
       {/* Floating Button */}
-      <FloatingCreateButton onClick={() => setOpenEditorModal(true)} />
+      <FloatingCreateButton
+        onClick={() => {
+          setSelectedNote(null);
+          setOpenEditorModal(true);
+        }}
+      />
 
       {/* Modal */}
       <NotesModal
         open={openEditorModal}
-        onClose={() => setOpenEditorModal(false)}
+        onClose={() => {
+          setSelectedNote(null);
+          setOpenEditorModal(false);
+        }}
       />
     </MainLayout>
   );

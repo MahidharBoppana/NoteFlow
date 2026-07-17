@@ -22,11 +22,15 @@ function NotesEditor() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!selectedNote) return;
-
-    setTitle(selectedNote.title);
-    setContent(selectedNote.content);
-    setCategory(selectedNote.category || "Personal");
+    if (selectedNote) {
+      setTitle(selectedNote.title);
+      setContent(selectedNote.content);
+      setCategory(selectedNote.category || "Personal");
+    } else {
+      setTitle("");
+      setContent("");
+      setCategory("Personal");
+    }
   }, [selectedNote]);
 
   const handleSubmit = async () => {
