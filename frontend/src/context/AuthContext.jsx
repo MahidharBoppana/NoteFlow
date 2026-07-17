@@ -40,7 +40,6 @@ function AuthProvider({ children }) {
       const token = getAccessToken();
 
       if (!token) {
-        console.log("No token found");
         setLoading(false);
         return;
       }
