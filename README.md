@@ -39,7 +39,6 @@ NoteFlow is a full-stack MERN note-taking application that helps users securely 
 - Vite
 - Tailwind CSS
 - React Router
-- Axios
 - TinyMCE
 - Sonner
 
