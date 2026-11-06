@@ -5,7 +5,7 @@ const errorMiddleware = (err, req, res, next) => {
     error = new Error(String(error));
   }
 
-  console.error(error); // Helpful while developing
+
 
   return res.status(error.statusCode || 500).json({
     success: false,
